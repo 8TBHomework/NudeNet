@@ -1,4 +1,4 @@
-from nudenet import Detector
+from nudetect import Detector
 from PIL import Image
 
 if __name__ == '__main__':

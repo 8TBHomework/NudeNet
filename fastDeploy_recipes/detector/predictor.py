@@ -1,8 +1,8 @@
 import os
-import base64
-from nudenet import NudeDetector
+from nudetect import Detector
 
-detector = NudeDetector(os.getenv("MODEL_NAME", "default"))
+# TODO ensure model exists
+detector = Detector("")
 
 
 """
