@@ -12,32 +12,16 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'NudeNet'
-DESCRIPTION = 'An ensemble of Neural Nets for Nudity Detection and Censoring'
-URL = 'https://github.com/bedapudi6788/NudeNet'
-EMAIL = 'praneethbedapudi@gmail.com'
-AUTHOR = 'BEDAPUDI PRANEETH'
+NAME = 'Nudetect'
+DESCRIPTION = 'Neural network to detect nudity (fork of NudeNet)'
+URL = 'https://github.com/8TBHomework/NudeNet'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '2.0.9'
+VERSION = '3.0.0'
 
-# What packages are required for this module to be executed?
 REQUIRED = [
     'pillow',
-    'opencv-python-headless>=4.5.1.48',
-    'pydload',
-    'scikit-image',
     'onnxruntime'
 ]
-
-# What packages are optional?
-EXTRAS = {
-    # 'fancy feature': ['django'],
-}
-
-# The rest you shouldn't have to touch too much :)
-# ------------------------------------------------
-# Except, perhaps the License and Trove Classifiers!
-# If you do change the License, remember to change the Trove Classifier for that!
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -91,7 +75,7 @@ class UploadCommand(Command):
         self.status('Pushing git tags…')
         os.system('git tag v{0}'.format(about['__version__']))
         os.system('git push --tags')
-        
+
         sys.exit()
 
 
@@ -102,8 +86,6 @@ setup(
     description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type='text/markdown',
-    author=AUTHOR,
-    author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
     packages=find_packages(exclude=('tests',)),
@@ -114,7 +96,6 @@ setup(
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },
     install_requires=REQUIRED,
-    extras_require=EXTRAS,
     include_package_data=True,
     license='GPLv3',
     classifiers=[

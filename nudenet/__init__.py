@@ -1,52 +1,38 @@
-import os
-import pydload
 import numpy as np
 import onnxruntime
 from PIL import Image
 
 from .detector_utils import preprocess_image
 
-FILE_URLS = {
-    "default": {
-        "checkpoint": "https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_default_checkpoint.onnx",
-        "classes": "https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_default_classes",
-    },
-    "base": {
-        "checkpoint": "https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_base_checkpoint.onnx",
-        "classes": "https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_base_classes",
-    },
-}
+MODEL_CHECKPOINT_URL = "https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_default_checkpoint.onnx"
+CLASSES = [  # order is important
+    "EXPOSED_ANUS",
+    "EXPOSED_ARMPITS",
+    "COVERED_BELLY",
+    "EXPOSED_BELLY",
+    "COVERED_BUTTOCKS",
+    "EXPOSED_BUTTOCKS",
+    "FACE_F",
+    "FACE_M",
+    "COVERED_FEET",
+    "EXPOSED_FEET",
+    "COVERED_BREAST_F",
+    "EXPOSED_BREAST_F",
+    "COVERED_GENITALIA_F",
+    "EXPOSED_GENITALIA_F",
+    "EXPOSED_BREAST_M",
+    "EXPOSED_GENITALIA_M"
+]
 
 
 class Detector:
 
-    def __init__(self, model_name="default"):
+    def __init__(self, model_checkpoint_path):
         """
         model = Detector()
         """
-        checkpoint_url = FILE_URLS[model_name]["checkpoint"]
-        classes_url = FILE_URLS[model_name]["classes"]
 
-        home = os.path.expanduser("~")
-        model_folder = os.path.join(home, f".NudeNet/")
-        if not os.path.exists(model_folder):
-            os.makedirs(model_folder)
-
-        checkpoint_name = os.path.basename(checkpoint_url)
-        checkpoint_path = os.path.join(model_folder, checkpoint_name)
-        classes_path = os.path.join(model_folder, "classes")
-
-        if not os.path.exists(checkpoint_path):
-            print("Downloading the checkpoint to", checkpoint_path)
-            pydload.dload(checkpoint_url, save_to_path=checkpoint_path, max_time=None)
-
-        if not os.path.exists(classes_path):
-            print("Downloading the classes list to", classes_path)
-            pydload.dload(classes_url, save_to_path=classes_path, max_time=None)
-
-        self.detection_model = onnxruntime.InferenceSession(checkpoint_path)
-
-        self.classes = [c.strip() for c in open(classes_path).readlines() if c.strip()]
+        self.detection_model = onnxruntime.InferenceSession(model_checkpoint_path)
 
     def detect(self, image: Image, mode="default", min_prob=None):
         if mode == "fast":
@@ -73,7 +59,7 @@ class Detector:
             if score < min_prob:
                 continue
             box = box.astype(int).tolist()
-            label = self.classes[label]
+            label = CLASSES[label]
             processed_boxes.append(
                 {"box": [int(c) for c in box], "score": float(score), "label": label}
             )
